@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="th" uri="http://www.thymeleaf.org/" %>
+<%@ taglib prefix="sec" uri="http://www.thymeleaf.org/extras/spring-security" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="es">
+  <head>
+    <title>Software de Gestión de Facultad</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand navbar-dark m-2 rounded-3">
+        <div class="logo-container">
+          <a class="navbar-brand logo-link" th:href="@{/}">
+            Facultad
+            <img th:src="@{/images/logo.png}" alt="Logo" class="logo" />
+          </a>
+        </div>
+        <c:choose>
+          <c:when test="${#request.getRequestURI() == '/estudiantes'}">
+            <h3 class="text-light">Estudiantes</h3>
+          </c:when>
+          <c:when test="${#request.getRequestURI() == '/profesores'}">
+            <h3 class="text-light">Profesores</h3>
+          </c:when>
+          <c:when test="${#request.getRequestURI() == '/personal_de_servicio'}">
+            <h3 class="text-light">Personal de Servicio</h3>
+          </c:when>
+        </c:choose>
+        <div class="button-container">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="text-light nav-link" aria-current="page" th:href="@{/portal}" sec:authorize="hasAnyRole('USER', 'ADMIN', 'PERSONAL')">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a sec:authorize="hasAnyRole('ADMIN', 'PERSONAL')" class="text-light nav-link" th:href="@{/Administración}">Administración</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle me-5" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img th:if="${session.usuariosession != null && session.usuariosession.imagen != null}"
+                     th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" alt="Imagen" class="img-perfil" />
+
+                <img th:unless="${session.usuariosession != null && session.usuariosession.imagen != null}"
+                     th:src="@{/images/user.png}" width="20px" alt="Imagen" class="pb-1" />
+              </a>
+              <ul class="dropdown-menu">
+                <c:choose>
+                  <c:when test="${empty session.usuariosession}">
+                    <li><a class="dropdown-item" th:href="@{/login}">Iniciar Sesión</a></li>
+                    <li><a class="dropdown-item" th:href="@{/registro}">Registrarme</a></li>
+                  </c:when>
+                  <c:otherwise>
+                    <li><a class="dropdown-item" th:href="@{/perfil}">Editar Perfil</a></li>
+                    <li><a class="dropdown-item" th:href="@{/logout}">Cerrar Sesión</a></li>
+                  </c:otherwise>
+                </c:choose>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+  </body>
+</html>
